@@ -45,7 +45,12 @@ const TarefasToolbar = props => {
 
   const submit = (event) => {
     event.preventDefault()
-    console.log(`Descrição: - ${descricao}, Categoria: - ${categoria}`)
+
+    const tarefa = {
+      descricao: descricao,
+      categoria: categoria
+    }
+    props.salvar(tarefa)
   }
 
   return (
@@ -73,7 +78,6 @@ const TarefasToolbar = props => {
             <FormControl fullWidth>
               <InputLabel>Categoria: </InputLabel>
               <Select value={categoria} onChange={e => setCategoria(e.target.value)}>
-                {/* <MenuItem value="">Selecione</MenuItem> */}
                 <MenuItem value={"TRABALHO"}>Trabalho</MenuItem>
                 <MenuItem value={"ESTUDOS"}>Estudos</MenuItem>
                 <MenuItem value={"OUTROS"}>Outros</MenuItem>
