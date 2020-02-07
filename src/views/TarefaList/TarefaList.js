@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-
 import { TarefasToolbar, TarefasTable } from './components';
 import axios from 'axios';
 
@@ -25,7 +24,11 @@ const TarefaList = () => {
     axios.post(API_URL, tarefa, {
       headers : headers
     }).then(response => {
-      listarTarefas();
+      // listarTarefas();
+      //Dessa Forma ele não faz uma nova requisição de toda a lista, apenas faz o post
+      const novaTarefa = response.data
+      setTarefas([...tarefas, novaTarefa])
+
     }).catch(erro => {
       console.log(erro);
     })
@@ -42,6 +45,16 @@ const TarefaList = () => {
     })
   }
 
+  const alterarStatus = (id) => {
+    axios.patch(`${API_URL}/${id}`, null, {
+      headers : headers
+    }).then(response => {
+      console.log(response.status);
+    }).catch(erro => {
+      console.log(erro);
+    })
+  }
+
   useEffect(() => {
     listarTarefas();
   }, [])
@@ -50,7 +63,7 @@ const TarefaList = () => {
     <div className={classes.root}>
       <TarefasToolbar salvar={salvar}/>
       <div className={classes.content}>
-        <TarefasTable tarefas={tarefas} />
+        <TarefasTable alterarStatus={alterarStatus} tarefas={tarefas} />
       </div>
     </div>
   );
