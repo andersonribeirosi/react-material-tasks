@@ -68,7 +68,6 @@ const TarefasTable = props => {
                     </TableRow>
                   )
                 })
-
                 }
               </TableBody>
             </Table>

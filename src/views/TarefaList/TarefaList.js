@@ -25,8 +25,7 @@ const TarefaList = () => {
     axios.post(API_URL, tarefa, {
       headers : headers
     }).then(response => {
-      console.log(response.data);
-      
+      listarTarefas();
     }).catch(erro => {
       console.log(erro);
     })
@@ -37,8 +36,6 @@ const TarefaList = () => {
       headers : headers
     }).then(response => {
       const listaDeTarefas = response.data
-      console.log(listaDeTarefas);
-      
       setTarefas(listaDeTarefas)
     }).catch(erro => {
       console.log(erro);
@@ -46,7 +43,7 @@ const TarefaList = () => {
   }
 
   useEffect(() => {
-    listarTarefas()
+    listarTarefas();
   }, [])
 
   return (
