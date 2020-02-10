@@ -3,6 +3,10 @@ import { makeStyles } from '@material-ui/styles';
 import { TarefasToolbar, TarefasTable } from './components';
 import axios from 'axios';
 
+import {bindActionCreators} from 'redux'
+import { connect } from 'react-redux'
+import { listar } from '../../store/tarefasReducer'
+ 
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3)
@@ -15,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 const API_URL = 'https://minhastarefas-api.herokuapp.com/tarefas'
 
 
-const TarefaList = () => {
+const TarefaList = (props) => {
   const classes = useStyles();
 
   const [tarefas, setTarefas] = useState([]);
@@ -46,17 +50,6 @@ const TarefaList = () => {
     })
   }
 
-  const listarTarefas = () => {
-    axios.get(API_URL, {
-      headers : {'x-tenant-id' : localStorage.getItem('usuario_logado')}
-    }).then(response => {
-      const listaDeTarefas = response.data
-      setTarefas(listaDeTarefas)
-    }).catch(erro => {
-      console.log(erro);
-    })
-  }
-
   const alterarStatus = (id) => {
     axios.patch(`${API_URL}/${id}`, null, {
       headers : {'x-tenant-id' : localStorage.getItem('usuario_logado')}
@@ -74,17 +67,24 @@ const TarefaList = () => {
   }
 
   useEffect(() => {
-    listarTarefas();
+    props.listar();
   }, [])
 
   return (
     <div className={classes.root}>
       <TarefasToolbar salvar={salvar}/>
       <div className={classes.content}>
-        <TarefasTable alterarStatus={alterarStatus} deleteAction={deletarTarefa} tarefas={tarefas} />
+        <TarefasTable alterarStatus={alterarStatus} deleteAction={deletarTarefa} tarefas={props.tarefas} />
       </div>
     </div>
   );
 };
 
-export default TarefaList;
+const mapStateToProps = state => ({
+  tarefas: state.tarefas.tarefas
+})
+
+const mapDispatchToProps = dispatch => 
+bindActionCreators({listar}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(TarefaList);
