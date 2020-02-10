@@ -7,7 +7,8 @@ import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
 import { 
   listar,
-  salvar 
+  salvar,
+  deletar 
 } from '../../store/tarefasReducer'
  
 const useStyles = makeStyles(theme => ({
@@ -26,18 +27,6 @@ const TarefaList = (props) => {
   const classes = useStyles();
 
   const [tarefas, setTarefas] = useState([]);
-
-  const deletarTarefa = (id) => {
-    axios.delete(`${API_URL}/${id}`, {
-      headers : {'x-tenant-id' : localStorage.getItem('usuario_logado')}
-    })
-    .then(response => {
-      const lista = tarefas.filter(tarefa => tarefa.id !== id)
-      setTarefas(lista)
-    }).catch(erro => {
-      console.log(erro)
-    })
-  }
 
   const alterarStatus = (id) => {
     axios.patch(`${API_URL}/${id}`, null, {
@@ -63,7 +52,7 @@ const TarefaList = (props) => {
     <div className={classes.root}>
       <TarefasToolbar salvar={props.salvar}/>
       <div className={classes.content}>
-        <TarefasTable alterarStatus={alterarStatus} deleteAction={deletarTarefa} tarefas={props.tarefas} />
+        <TarefasTable alterarStatus={alterarStatus} deleteAction={props.deletar} tarefas={props.tarefas} />
       </div>
     </div>
   );
@@ -74,6 +63,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => 
-bindActionCreators({listar, salvar}, dispatch)
+bindActionCreators({listar, salvar, deletar}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TarefaList);
