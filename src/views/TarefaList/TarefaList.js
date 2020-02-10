@@ -5,7 +5,10 @@ import axios from 'axios';
 
 import {bindActionCreators} from 'redux'
 import { connect } from 'react-redux'
-import { listar } from '../../store/tarefasReducer'
+import { 
+  listar,
+  salvar 
+} from '../../store/tarefasReducer'
  
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,20 +26,6 @@ const TarefaList = (props) => {
   const classes = useStyles();
 
   const [tarefas, setTarefas] = useState([]);
-
-  const salvar = (tarefa) => {
-    axios.post(API_URL, tarefa, {
-      headers : {'x-tenant-id' : localStorage.getItem('usuario_logado')}
-    }).then(response => {
-      // listarTarefas();
-      //Dessa Forma ele não faz uma nova requisição de toda a lista, apenas faz o post
-      const novaTarefa = response.data
-      setTarefas([...tarefas, novaTarefa])
-
-    }).catch(erro => {
-      console.log(erro);
-    })
-  }
 
   const deletarTarefa = (id) => {
     axios.delete(`${API_URL}/${id}`, {
@@ -72,7 +61,7 @@ const TarefaList = (props) => {
 
   return (
     <div className={classes.root}>
-      <TarefasToolbar salvar={salvar}/>
+      <TarefasToolbar salvar={props.salvar}/>
       <div className={classes.content}>
         <TarefasTable alterarStatus={alterarStatus} deleteAction={deletarTarefa} tarefas={props.tarefas} />
       </div>
@@ -85,6 +74,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => 
-bindActionCreators({listar}, dispatch)
+bindActionCreators({listar, salvar}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(TarefaList);
